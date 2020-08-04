@@ -1618,6 +1618,7 @@ class TelegramAlerter(Alerter):
         self.telegram_proxy = self.rule.get('telegram_proxy', None)
         self.telegram_proxy_login = self.rule.get('telegram_proxy_login', None)
         self.telegram_proxy_password = self.rule.get('telegram_proxy_pass', None)
+        self.telegram_parse_mode = self.rule.get('telegram_parse_mode', 'markdown')
         
 
     def alert(self, matches):
@@ -1638,7 +1639,7 @@ class TelegramAlerter(Alerter):
         payload = {
             'chat_id': self.telegram_room_id,
             'text': body,
-            'parse_mode': 'markdown',
+            'parse_mode': self.telegram_parse_mode,
             'disable_web_page_preview': True
         }
 
