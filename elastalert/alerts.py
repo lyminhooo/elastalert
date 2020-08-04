@@ -95,7 +95,7 @@ class BasicMatchString(object):
         elif self.rule.get('alert_render_type') == 'jinja2':
             template_content = self.rule.get('alert_render_type_template')
             template = Template(template_content)
-            body = template.render(self.match)
+            alert_text = template.render(self.match)
         self.text += alert_text
 
     def _add_rule_text(self):
