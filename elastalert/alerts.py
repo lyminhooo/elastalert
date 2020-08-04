@@ -92,7 +92,10 @@ class BasicMatchString(object):
 
                 kw[kw_name] = missing if val is None else val
             alert_text = alert_text.format(**kw)
-
+        elif self.rule.get('alert_render_type') == 'jinja2':
+            template_content = self.rule.get('alert_render_type_template')
+            template = Template(template_content)
+            body = template.render(self.match)
         self.text += alert_text
 
     def _add_rule_text(self):
@@ -258,10 +261,7 @@ class Alerter(object):
                 # Separate text of aggregated alerts with dashes
                 if len(matches) > 1:
                     body += '\n----------------------------------------\n'
-        if self.rule.get('alert_render_type') == 'jinja2':
-            template_content = self.rule.get('alert_render_type_template')
-            template = Template(template_content)
-            body = template.render(body)
+        
 
         return body
 
