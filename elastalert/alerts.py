@@ -18,6 +18,7 @@ from smtplib import SMTP_SSL
 from smtplib import SMTPAuthenticationError
 from smtplib import SMTPException
 from socket import error
+from jinja2 import Template
 
 import boto3
 import requests
@@ -257,6 +258,11 @@ class Alerter(object):
                 # Separate text of aggregated alerts with dashes
                 if len(matches) > 1:
                     body += '\n----------------------------------------\n'
+        if self.rule.get('alert_render_type') == 'jinja2':
+            template_content = self.rule.get('alert_render_type_template')
+            template = Template(template_content)
+            body = template.render(body)
+
         return body
 
     def get_aggregation_summary_text__maximum_width(self):
@@ -1612,6 +1618,7 @@ class TelegramAlerter(Alerter):
         self.telegram_proxy = self.rule.get('telegram_proxy', None)
         self.telegram_proxy_login = self.rule.get('telegram_proxy_login', None)
         self.telegram_proxy_password = self.rule.get('telegram_proxy_pass', None)
+        
 
     def alert(self, matches):
         body = '⚠ *%s* ⚠ ```\n' % (self.create_title(matches))
